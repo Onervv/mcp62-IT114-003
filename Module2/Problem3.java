@@ -25,9 +25,23 @@ public class Problem3 {
         Object[] output = new Object[arr.length];
         //hint: use the arr variable; don't diretly use the a1-a4 variables
         //TODO convert each value to positive
+
+        for (int i = 0; i < arr.length; i++)
+        {
+            if (arr[i]instanceof Integer){                  // http://www.java2s.com/Tutorial/Java/0060__Operators/TheinstanceofKeyword.htm 
+                output[i] = Math.abs((Integer) arr[i]);     // Give the absolute value of indexed number
+            }
+            else if (arr[i]instanceof Double){
+                output[i] = Math.abs((Double) arr[i]);
+            }
+            else if (arr[i]instanceof String){              
+                output[i] = Math.abs(Integer.parseInt((String) arr[i])) + ""; 
+            } 
+
+        }
+
         //set the result to the proper index of the output array and maintain the original data type
         //hint: don't forget to handle the data types properly, the result datatype should be the same as the original datatype
-        
         //end edit section
 
         StringBuilder sb = new StringBuilder();
