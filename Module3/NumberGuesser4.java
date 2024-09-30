@@ -136,6 +136,56 @@ public class NumberGuesser4 {
                 lose();
                 pickNewRandom = true;
             }
+            // mcp62 9/30/2024
+            // Wow this took me way too long to see that I need to consider Strike == 0 
+            if (maxStrikes == 10){
+                while (strikes <= 9 && strikes != 0){
+                    if (guess<number){
+                        System.out.println("Guess Higher; Your number is too low");
+                        return;
+                    }
+                    else if (guess>number){
+                        System.out.println("Guess lower: Your number is too high");
+                        return;
+                    }
+                    else if (guess == number){
+                        return;
+                    }
+                }
+            }
+
+            if (maxStrikes == 5){
+                while (strikes <= 4 && strikes != 0){
+                    if (guess<number){
+                        System.out.println("Guess Higher; Your number is too low");
+                        return;
+                    }
+                    else if (guess>number){
+                        System.out.println("Guess lower: Your number is too high");
+                        return;
+                    }
+                    else if (guess == number){
+                        return;
+                    }
+                }
+            }
+
+            if (maxStrikes == 3){
+                while (strikes <= 2 && strikes != 0){
+                    if (guess<number){
+                        System.out.println("Guess Higher; Your number is too low");
+                        return;
+                    }
+                    else if (guess>number){
+                        System.out.println("Guess lower: Your number is too high");
+                        return;
+                    }
+                    else if (guess == number){
+                        return;
+                    }
+                }
+            }
+
         }
         saveState();
     }
@@ -153,6 +203,22 @@ public class NumberGuesser4 {
     }
 
     public void start() {
+        System.out.print("Please select your difficulty: easy, medium or hard: ");
+        Scanner s = new Scanner(System.in);
+        String difficulty = s.next();
+        System.out.println("Your difficulty: " +difficulty);
+        // mcp62 9/30/2024
+        // Adding option 3; Difficulty Selector
+        if (difficulty.equals("easy")){
+            maxStrikes = 10;
+        }
+        else if (difficulty.equals("medium")){
+            maxStrikes = 5;
+        }
+        else if (difficulty.equals("hard")){
+            maxStrikes = 3;
+        }
+    
         try (Scanner input = new Scanner(System.in);) {
             System.out.println("Welcome to NumberGuesser4.0");
             System.out.println("To exit, type the word 'quit'.");
