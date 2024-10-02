@@ -212,29 +212,24 @@ public class NumberGuesser4 {
     }
 
     public void start() {
-        System.out.print("Please select your difficulty: easy, medium or hard: ");
-        Scanner s = new Scanner(System.in);
-        if (s.hasNext()){
-            String difficulty = s.nextLine();
-        
-            System.out.println("Your difficulty: " +difficulty);
-            // mcp62 9/30/2024
-            // Adding option 3; Difficulty Selector
-            if (difficulty.equals("easy")){
-                maxStrikes = 10;
-            }
-            else if (difficulty.equals("medium")){
-                maxStrikes = 5;
-            }
-            else if (difficulty.equals("hard")){
-                maxStrikes = 3;
-            }
-            s.close();
-        }
-    
         try (Scanner input = new Scanner(System.in);) {
             System.out.println("Welcome to NumberGuesser4.0");
             System.out.println("To exit, type the word 'quit'.");
+            System.out.print("Please select your difficulty: easy, medium or hard: ");
+            String difficulty = input.nextLine();
+
+            System.out.println("Your difficulty: " +difficulty);
+            // mcp62 9/30/2024
+            // Adding option 3; Difficulty Selector
+            if (difficulty.equalsIgnoreCase("easy")){
+                maxStrikes = 10;
+            }
+            else if (difficulty.equalsIgnoreCase("medium")){
+                maxStrikes = 5;
+            }
+            else if (difficulty.equalsIgnoreCase("hard")){
+                maxStrikes = 3;
+            }
             loadState();
             do {
                 if (pickNewRandom) {
