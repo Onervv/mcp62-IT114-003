@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Random;
 
 public class Server {
     private int port = 3000;
@@ -121,6 +122,28 @@ public class Server {
             return true;
         }
         // add more "else if" as needed
+        // Mcp62 10/7/2024
+        else if (message.startsWith("/roll")) {
+            int dIndex = message.indexOf("d");
+            int numofdie = Integer.parseInt(message.substring(6, dIndex));
+            int lengthofdie = Integer.parseInt(message.substring(dIndex + 1));
+            int result = 0;
+            Random random = new Random();
+            for (int i = 0; i < numofdie; i++) {
+                result += random.nextInt(lengthofdie) + 1;
+            }
+            relay(String.format("Rolled a %s die and got %d", message.substring(6), result), sender);
+            return true;
+        }
+        else if ("/flip".equalsIgnoreCase(message)) {
+            Random random = new Random();
+            int randomIndex = random.nextInt(2);
+            String [] headsOrTails = {"Heads", "Tails"};
+            String result = headsOrTails[randomIndex];
+            relay(String.format("The coin landed on %s", result), sender);
+            return true;
+        }
+        
         return false;
     }
 
