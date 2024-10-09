@@ -24,7 +24,6 @@ public class Problem1 {
         System.out.println("Odds output:");
         // hint: use the arr variable; don't diretly use the a1-a4 variables
         // Goal: output only odd *values* of each passed array
-        // TODO add/edit code here
         // mcp62 9/23/2024
         for (int i = 0; i < arr.length; i++ )
         {

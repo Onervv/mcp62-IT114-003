@@ -107,7 +107,7 @@ public class NumberGuesser4 {
             System.out.println("Tired of playing? No problem, see you next time.");
             processed = true;
         }
-        // TODO add other conditions here
+        
         return processed;
     }
 
