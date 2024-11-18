@@ -8,7 +8,7 @@ public enum PayloadType {
     ROOM_CREATE,
     ROOM_JOIN, // join/leave room based on boolean
     MESSAGE, // sender and message,
-    ROOM_LIST, // client: query for rooms, server: result of query
-    ROLL, //mcp62 11/18/2024
-    FLIP, //mcp62 11/18/2024
+    ROOM_LIST, // client: query for rooms, server: result of query,
+    FLIP,
+    ROLL,
 }

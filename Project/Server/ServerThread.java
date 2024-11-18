@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 
 import Project.Common.PayloadType;
 import Project.Common.RoomResultsPayload;
+import Project.Common.XYPayload;
 import Project.Common.Payload;
 
 import Project.Common.ConnectionPayload;
