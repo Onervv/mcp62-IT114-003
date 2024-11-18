@@ -1,5 +1,6 @@
 package Project.Server;
 
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import Project.Common.LoggerUtil;
@@ -191,23 +192,71 @@ public class Room implements AutoCloseable{
         if (!isRunning) { // block action if Room isn't running
             return;
         }
-
+        while (true){
+        if (message.contains(".b.")){
+            message=message.replaceFirst(".b.", "[color=\"blue\"]");
+            message=message.replaceFirst(".b.", "[/color]");
+            continue;
+        } else if (message.contains(".r.")){
+            message=message.replaceFirst(".r.", "[color=\"red\"]");
+            message=message.replaceFirst(".r.", "[/color]");
+            continue;
+        } else if (message.contains(".g.")){
+            message=message.replaceFirst(".g.", "[color=\"green\"]");
+            message=message.replaceFirst(".g.", "[/color]");
+            continue;
+        } else if (message.contains("._.")){
+            message=message.replaceFirst("._.", "[u]");
+            message=message.replaceFirst("._.", "[/u]");
+            continue;
+        }else if (message.contains(".*.")){
+            message=message.replaceFirst(".*.", "[b]");
+            message=message.replaceFirst(".*.", "[/b]");
+            continue;
+        }else if (message.contains(".%.")){
+            message=message.replaceFirst(".%.", "[i]");
+            message=message.replaceFirst(".%.", "[/i]");
+            continue;
+        }
+            break;
+        }
         // Note: any desired changes to the message must be done before this section
         long senderId = sender == null ? ServerThread.DEFAULT_CLIENT_ID : sender.getClientId();
-
         // loop over clients and send out the message; remove client if message failed
         // to be sent
         // Note: this uses a lambda expression for each item in the values() collection,
         // it's one way we can safely remove items during iteration
+        final String modifiedMessage = message;
         info(String.format("sending message to %s recipients: %s", clientsInRoom.size(), message));
         clientsInRoom.values().removeIf(client -> {
-            boolean failedToSend = !client.sendMessage(senderId, message);
+            boolean failedToSend = !client.sendMessage(senderId, modifiedMessage);
             if (failedToSend) {
                 info(String.format("Removing disconnected client[%s] from list", client.getClientId()));
                 disconnect(client);
             }
             return failedToSend;
         });
+    }
+    protected synchronized void sendRoll(ServerThread sender, String message){
+        Random random = new Random();
+        int result=0;
+        message=message.substring(6);
+        if (message.contains("d")) {
+            String[] parts=message.split("d");
+            int num1=Integer.parseInt(parts[0]);
+            int num2=Integer.parseInt(parts[1]);
+            for (int i = 0; i < num1; i++) {
+                result=result+random.nextInt(num2)+1;
+            }
+        } else {
+            result=random.nextInt(Integer.parseInt(message))+1;
+        } 
+        sendMessage(sender, ""+result);
+    }
+    protected synchronized void sendFlip(ServerThread sender){
+        Random random=new Random();
+        String result=random.nextBoolean() ? "heads" : "tails";
+        sendMessage(sender, result);
     }
     // end send data to client(s)
 

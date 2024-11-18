@@ -11,7 +11,6 @@ import Project.Common.LoggerUtil;
 
 public enum Server {
     INSTANCE;
-
     {
         // statically initialize the server-side LoggerUtil
         LoggerUtil.LoggerConfig config = new LoggerUtil.LoggerConfig();

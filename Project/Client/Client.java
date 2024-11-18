@@ -244,6 +244,17 @@ public enum Client {
      * @param message
      */
     private void sendMessage(String message) {
+        if (message.startsWith("/roll")){
+            Payload p = new Payload();
+            p.setPayloadType(PayloadType.ROLL);
+            p.setMessage(message);
+            send(p);
+        } else if (message.startsWith("/flip")){
+            Payload p = new Payload();
+            p.setPayloadType(PayloadType.FLIP);
+            p.setMessage(message);
+            send(p);
+        }
         Payload p = new Payload();
         p.setPayloadType(PayloadType.MESSAGE);
         p.setMessage(message);

@@ -4,8 +4,10 @@
 ./Common/LoggerUtil.java
 ./Common/Payload.java
 ./Common/PayloadType.java
+./Common/Player.java
 ./Common/RoomResultsPayload.java
 ./Common/TextFX.java
+./Common/TimedEvent.java
 ./Server/BaseServerThread.java
 ./Server/Room.java
 ./Server/Server.java

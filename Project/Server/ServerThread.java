@@ -103,6 +103,12 @@ public class ServerThread extends BaseServerThread {
                 case MESSAGE:
                     currentRoom.sendMessage(this, payload.getMessage());
                     break;
+                case ROLL:
+                    currentRoom.sendRoll(this, payload.getMessage());
+                    break;
+                case FLIP:
+                    currentRoom.sendFlip(this);
+                    break;
                 case ROOM_CREATE:
                     currentRoom.handleCreateRoom(this, payload.getMessage());
                     break;
