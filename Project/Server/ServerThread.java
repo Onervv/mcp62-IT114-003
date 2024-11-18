@@ -103,9 +103,11 @@ public class ServerThread extends BaseServerThread {
                 case MESSAGE:
                     currentRoom.sendMessage(this, payload.getMessage());
                     break;
+                    //mcp62 11/18/2024
                 case ROLL:
                     currentRoom.sendRoll(this, payload.getMessage());
                     break;
+                    //mcp62 11/18/2024
                 case FLIP:
                     currentRoom.sendFlip(this);
                     break;

@@ -244,11 +244,13 @@ public enum Client {
      * @param message
      */
     private void sendMessage(String message) {
+        //mcp62 11/18/2024
         if (message.startsWith("/roll")){
             Payload p = new Payload();
             p.setPayloadType(PayloadType.ROLL);
             p.setMessage(message);
             send(p);
+        //mcp62 11/18/2024
         } else if (message.startsWith("/flip")){
             Payload p = new Payload();
             p.setPayloadType(PayloadType.FLIP);

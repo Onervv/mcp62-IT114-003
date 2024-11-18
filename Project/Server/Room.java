@@ -192,33 +192,31 @@ public class Room implements AutoCloseable{
         if (!isRunning) { // block action if Room isn't running
             return;
         }
+        //mcp62 11/18/2024
         while (true){
-        if (message.contains(".b.")){
-            message=message.replaceFirst(".b.", "[color=\"blue\"]");
-            message=message.replaceFirst(".b.", "[/color]");
-            continue;
-        } else if (message.contains(".r.")){
-            message=message.replaceFirst(".r.", "[color=\"red\"]");
-            message=message.replaceFirst(".r.", "[/color]");
-            continue;
-        } else if (message.contains(".g.")){
-            message=message.replaceFirst(".g.", "[color=\"green\"]");
-            message=message.replaceFirst(".g.", "[/color]");
-            continue;
-        } else if (message.contains("._.")){
-            message=message.replaceFirst("._.", "[u]");
-            message=message.replaceFirst("._.", "[/u]");
-            continue;
-        }else if (message.contains(".*.")){
-            message=message.replaceFirst(".*.", "[b]");
-            message=message.replaceFirst(".*.", "[/b]");
-            continue;
-        }else if (message.contains(".%.")){
-            message=message.replaceFirst(".%.", "[i]");
-            message=message.replaceFirst(".%.", "[/i]");
-            continue;
+        String originalMessage = message;
+        if (message.contains("!b")){
+            message=message.replaceFirst("\\!b", "<blue>");
+            message=message.replaceFirst("\\!b", "</blue>");
+        } else if (message.contains("!r")){
+            message=message.replaceFirst("\\!r", "<red>");
+            message=message.replaceFirst("\\!r", "</red>");
+        } else if (message.contains("!g")){
+            message=message.replaceFirst("\\!g", "<green>");
+            message=message.replaceFirst("\\!g", "</green>");
+        } else if (message.contains("_")){
+            message=message.replaceFirst("\\_", "<u>");
+            message=message.replaceFirst("\\_", "</u>");
+        }else if (message.contains("*")){
+            message=message.replaceFirst("\\*", "<b>");
+            message=message.replaceFirst("\\*", "</b>");
+        }else if (message.contains("|")){
+            message=message.replaceFirst("\\|", "<i>");
+            message=message.replaceFirst("\\|", "</i>");
         }
+        if (message.equals(originalMessage)) {
             break;
+        }
         }
         // Note: any desired changes to the message must be done before this section
         long senderId = sender == null ? ServerThread.DEFAULT_CLIENT_ID : sender.getClientId();
@@ -237,6 +235,7 @@ public class Room implements AutoCloseable{
             return failedToSend;
         });
     }
+    //mcp62 11/18/2024
     protected synchronized void sendRoll(ServerThread sender, String message){
         Random random = new Random();
         int result=0;
@@ -253,6 +252,7 @@ public class Room implements AutoCloseable{
         } 
         sendMessage(sender, ""+result);
     }
+    //mcp62 11/18/2024
     protected synchronized void sendFlip(ServerThread sender){
         Random random=new Random();
         String result=random.nextBoolean() ? "heads" : "tails";
