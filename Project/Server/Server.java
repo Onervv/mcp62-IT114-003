@@ -11,7 +11,6 @@ import Project.Common.LoggerUtil;
 
 public enum Server {
     INSTANCE;
-
     {
         // statically initialize the server-side LoggerUtil
         LoggerUtil.LoggerConfig config = new LoggerUtil.LoggerConfig();
@@ -106,15 +105,7 @@ public enum Server {
         if (rooms.containsKey(nameCheck)) {
             return false;
         }
-        Room room = null;
-        if (Room.LOBBY.equalsIgnoreCase(nameCheck)) {
-            room = new Room(name);
-        } else {
-            // uncomment this if doing chatroom
-            // room = new Room(name);
-            // comment this out if doing chatroom
-            room = new GameRoom(name); // <-- added during Ready Check lesson
-        }
+        Room room = new Room(name);
         rooms.put(nameCheck, room);
         LoggerUtil.INSTANCE.info(String.format("Created new Room %s", name));
         return true;
