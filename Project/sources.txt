@@ -1,5 +1,5 @@
 ./Client/Client.java
-./Client/ClientPlayer.java
+./Client/ClientData.java
 ./Common/ConnectionPayload.java
 ./Common/LoggerUtil.java
 ./Common/Payload.java
