@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
@@ -12,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import Project.Client.Interfaces.IClientEvents;
 import Project.Common.ConnectionPayload;
 import Project.Common.LoggerUtil;
 import Project.Common.Payload;
@@ -56,6 +58,13 @@ public enum Client {
     private final String LOGOUT = "logout";
     private final String SINGLE_SPACE = " ";
 
+    // callback that updates the UI
+    private static List<IClientEvents> events = new ArrayList<IClientEvents>();
+
+    public void addCallback(IClientEvents e) {
+        events.add(e);
+    }
+
     // needs to be private now that the enum logic is handling this
     private Client() {
         LoggerUtil.INSTANCE.info("Client Created");
@@ -94,6 +103,37 @@ public enum Client {
             LoggerUtil.INSTANCE.warning("Unknown host", e);
         } catch (IOException e) {
             LoggerUtil.INSTANCE.severe("IOException", e);
+        }
+        return isConnected();
+    }
+
+
+     /**
+     * Takes an ip address and a port to attempt a socket connection to a server.
+     * 
+     * @param address
+     * @param port
+     * @param username
+     * @param callback (for triggering UI events)
+     * @return true if connection was successful
+     */
+    public boolean connect(String address, int port, String username, IClientEvents callback) {
+        myData.setClientName(username);
+        addCallback(callback);
+        try {
+            server = new Socket(address, port);
+            // channel to send to server
+            out = new ObjectOutputStream(server.getOutputStream());
+            // channel to listen to server
+            in = new ObjectInputStream(server.getInputStream());
+            LoggerUtil.INSTANCE.info("Client connected");
+            // Use CompletableFuture to run listenToServer() in a separate thread
+            CompletableFuture.runAsync(this::listenToServer);
+            sendClientName();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return isConnected();
     }
@@ -192,13 +232,19 @@ public enum Client {
         return false;
     }
 
+    public long getMyClientId() {
+        return myData.getClientId();
+    }
+
+
     // send methods to pass data to the ServerThread
 
     /**
      * Sends a search to the server-side to get a list of potentially matching Rooms
      * @param roomQuery optional partial match search String
+     * @throws IOException
      */
-    private void sendListRooms(String roomQuery) {
+    public void sendListRooms(String roomQuery) throws IOException {
         Payload p = new Payload();
         p.setPayloadType(PayloadType.ROOM_LIST);
         p.setMessage(roomQuery);
@@ -210,7 +256,7 @@ public enum Client {
      * 
      * @param room
      */
-    private void sendCreateRoom(String room) {
+    public void sendCreateRoom(String room) {
         Payload p = new Payload();
         p.setPayloadType(PayloadType.ROOM_CREATE);
         p.setMessage(room);
@@ -222,7 +268,7 @@ public enum Client {
      * 
      * @param room
      */
-    private void sendJoinRoom(String room) {
+    public void sendJoinRoom(String room) {
         Payload p = new Payload();
         p.setPayloadType(PayloadType.ROOM_JOIN);
         p.setMessage(room);
@@ -232,7 +278,7 @@ public enum Client {
     /**
      * Tells the server-side we want to disconnect
      */
-    private void sendDisconnect() {
+    void sendDisconnect() {
         Payload p = new Payload();
         p.setPayloadType(PayloadType.DISCONNECT);
         send(p);
@@ -243,7 +289,7 @@ public enum Client {
      * 
      * @param message
      */
-    private void sendMessage(String message) {
+    public void sendMessage(String message) {
         //mcp62 11/18/2024
         if (message.startsWith("/roll")){
             Payload p = new Payload();
@@ -280,13 +326,15 @@ public enum Client {
      * Generic send that passes any Payload over the socket (to ServerThread)
      * 
      * @param p
+     * @throws IOexception
      */
-    private void send(Payload p) {
+    private void send(Payload p) throws IOException {
         try {
             out.writeObject(p);
             out.flush();
         } catch (IOException e) {
             LoggerUtil.INSTANCE.severe("Socket send exception", e);
+            throw e;
         }
 
     }
@@ -443,6 +491,22 @@ public enum Client {
         } catch (Exception e) {
             LoggerUtil.INSTANCE.severe("Could not process Payload: " + payload,e);
         }
+    }
+
+     /**
+     * Returns the ClientName of a specific Client by ID.
+     * 
+     * @param id
+     * @return the name, or Room if id is -1, or [Unknown] if failed to find
+     */
+    public String getClientNameFromId(long id) {
+        if (id == ClientData.DEFAULT_CLIENT_ID) {
+            return "Room";
+        }
+        if (knownClients.containsKey(id)) {
+            return knownClients.get(id).getClientName();
+        }
+        return "[Unknown]";
     }
 
     // payload processors
