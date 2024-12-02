@@ -2,6 +2,8 @@ package Project.Client.Views;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -37,6 +39,15 @@ public class UserDetailsPanel extends JPanel {
         JTextField userValue = new JTextField();
         JLabel userError = new JLabel();
         userError.setVisible(false);
+
+        userValue.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (e.getKeyChar() == ' ') {
+                    e.consume();
+                }
+            }
+        });
 
         content.add(userLabel);
         content.add(userValue);

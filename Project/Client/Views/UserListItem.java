@@ -25,7 +25,7 @@ public class UserListItem extends JPanel {
      * @param parent     The parent container to calculate available width.
      */
     public UserListItem(long clientId, String clientName, JPanel parent) {
-        textContainer = new JEditorPane("text/plain", clientName);
+        textContainer = new JEditorPane("text/html", clientName);
         textContainer.setName(Long.toString(clientId));
         textContainer.setEditable(false);
         textContainer.setBorder(new EmptyBorder(0, 0, 0, 0)); // Add padding

@@ -11,4 +11,7 @@ public enum PayloadType {
     ROOM_LIST, // client: query for rooms, server: result of query,
     FLIP, //mcp62 11/18/2024
     ROLL, //mcp62 11/18/2024
+    MUTE, //mcp62 11/25/2024
+    UNMUTE, //mcp62 11/25/2024
+    PRIVATE, //mcp62 12/2/2024
 }
