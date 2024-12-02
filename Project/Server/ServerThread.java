@@ -1,6 +1,7 @@
 package Project.Server;
 
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -22,6 +23,7 @@ public class ServerThread extends BaseServerThread {
     private long clientId;
     private String clientName;
     private Consumer<ServerThread> onInitializationComplete; // callback to inform when this object is ready
+    private ArrayList<String> mute = new ArrayList<>();
 
     /**
      * Wraps the Socket connection and takes a Server reference and a callback
@@ -104,12 +106,16 @@ public class ServerThread extends BaseServerThread {
                     currentRoom.sendMessage(this, payload.getMessage());
                     break;
                     //mcp62 11/18/2024
+                case PRIVATE:
+                    currentRoom.sendPrivateMessage(this, payload.getMessage());
+                    break;
+                    //mcp62 12/2/2024
                 case ROLL:
                     currentRoom.sendRoll(this, payload.getMessage());
                     break;
                     //mcp62 11/18/2024
                 case FLIP:
-                    currentRoom.sendFlip(this);
+                    currentRoom.handleSendFlip(this);
                     break;
                 case ROOM_CREATE:
                     currentRoom.handleCreateRoom(this, payload.getMessage());
@@ -122,6 +128,12 @@ public class ServerThread extends BaseServerThread {
                     break;
                 case DISCONNECT:
                     currentRoom.disconnect(this);
+                    break;
+                case MUTE:
+                    currentRoom.mute(this, payload.getMessage()); //TODO implement
+                    break;
+                case UNMUTE:
+                    currentRoom.unMute(this, payload.getMessage()); //TODO implement
                     break;
                 default:
                     break;
@@ -223,6 +235,18 @@ public class ServerThread extends BaseServerThread {
         cp.setClientId(clientId);
         cp.setClientName(clientName);
         return send(cp);
+    }
+    public void mute(String name){
+        mute.add(name);
+    }
+    public void unMute(String name){
+        mute.remove(name);
+    }
+    public boolean isMute(String name){
+        if (mute.contains(name)){
+            return true;
+        }
+        return false;
     }
 
     // end send methods

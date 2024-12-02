@@ -9,9 +9,7 @@ public class Room implements AutoCloseable{
     private String name;// unique name of the Room
     protected volatile boolean isRunning = false;
     private ConcurrentHashMap<Long, ServerThread> clientsInRoom = new ConcurrentHashMap<Long, ServerThread>();
-
     public final static String LOBBY = "lobby";
-
     private void info(String message) {
         LoggerUtil.INSTANCE.info(String.format("Room[%s]: %s", name, message));
     }
@@ -196,14 +194,14 @@ public class Room implements AutoCloseable{
         while (true){
         String originalMessage = message;
         if (message.contains("!b")){
-            message=message.replaceFirst("\\!b", "<blue>");
-            message=message.replaceFirst("\\!b", "</blue>");
+            message=message.replaceFirst("\\!b", "<span style=\\\"color:blue\\\">");
+            message=message.replaceFirst("\\!b", "</span>");
         } else if (message.contains("!r")){
-            message=message.replaceFirst("\\!r", "<red>");
-            message=message.replaceFirst("\\!r", "</red>");
+            message=message.replaceFirst("\\!r", "<span style=\\\"color:red\\\">");
+            message=message.replaceFirst("\\!r", "</span>");
         } else if (message.contains("!g")){
-            message=message.replaceFirst("\\!g", "<green>");
-            message=message.replaceFirst("\\!g", "</green>");
+            message=message.replaceFirst("\\!g", "<span style=\\\"color:green\\\">");
+            message=message.replaceFirst("\\!g", "</span>");
         } else if (message.contains("_")){
             message=message.replaceFirst("\\_", "<u>");
             message=message.replaceFirst("\\_", "</u>");
@@ -227,12 +225,66 @@ public class Room implements AutoCloseable{
         final String modifiedMessage = message;
         info(String.format("sending message to %s recipients: %s", clientsInRoom.size(), message));
         clientsInRoom.values().removeIf(client -> {
+            if (!(client.isMute(sender.getClientName()))){
             boolean failedToSend = !client.sendMessage(senderId, modifiedMessage);
             if (failedToSend) {
                 info(String.format("Removing disconnected client[%s] from list", client.getClientId()));
                 disconnect(client);
             }
             return failedToSend;
+            }
+        return false;
+        });
+    }
+    protected synchronized void sendPrivateMessage(ServerThread sender, String message) {
+        String userName = message.split(" ")[0].substring(1);
+        if (!isRunning) { // block action if Room isn't running
+            return;
+        }
+        //mcp62 11/18/2024
+        while (true){
+        String originalMessage = message;
+        if (message.contains("!b")){
+            message=message.replaceFirst("\\!b", "<span style=\\\"color:blue\\\">");
+            message=message.replaceFirst("\\!b", "</span>");
+        } else if (message.contains("!r")){
+            message=message.replaceFirst("\\!r", "<span style=\\\"color:red\\\">");
+            message=message.replaceFirst("\\!r", "</span>");
+        } else if (message.contains("!g")){
+            message=message.replaceFirst("\\!g", "<span style=\\\"color:green\\\">");
+            message=message.replaceFirst("\\!g", "</span>");
+        } else if (message.contains("_")){
+            message=message.replaceFirst("\\_", "<u>");
+            message=message.replaceFirst("\\_", "</u>");
+        }else if (message.contains("*")){
+            message=message.replaceFirst("\\*", "<b>");
+            message=message.replaceFirst("\\*", "</b>");
+        }else if (message.contains("|")){
+            message=message.replaceFirst("\\|", "<i>");
+            message=message.replaceFirst("\\|", "</i>");
+        }
+        if (message.equals(originalMessage)) {
+            break;
+        }
+        }
+        // Note: any desired changes to the message must be done before this section
+        long senderId = sender == null ? ServerThread.DEFAULT_CLIENT_ID : sender.getClientId();
+        // loop over clients and send out the message; remove client if message failed
+        // to be sent
+        // Note: this uses a lambda expression for each item in the values() collection,
+        // it's one way we can safely remove items during iteration
+        final String modifiedMessage = message;
+        info(String.format("sending message to 1 recipient: %s", message));
+        clientsInRoom.values().removeIf(client -> {
+            if (!(client.isMute(sender.getClientName()))&&((client.getClientName().equals(userName))||client.getClientName().equals(sender.getClientName()))){
+            boolean failedToSend = !client.sendMessage(senderId, modifiedMessage);
+            if (failedToSend) {
+                info(String.format("Removing disconnected client[%s] from list", client.getClientId()));
+                disconnect(client);
+            }
+            return failedToSend;
+            }
+        return false;
         });
     }
     //mcp62 11/18/2024
@@ -250,14 +302,50 @@ public class Room implements AutoCloseable{
         } else {
             result=random.nextInt(Integer.parseInt(message))+1;
         } 
-        sendMessage(sender, ""+result);
+        sendMessage(sender, "<span style=\"color:purple\">"+result);
     }
+    
     //mcp62 11/18/2024
-    protected synchronized void sendFlip(ServerThread sender){
+    protected synchronized void handleSendFlip(ServerThread sender){
         Random random=new Random();
         String result=random.nextBoolean() ? "heads" : "tails";
-        sendMessage(sender, result);
+        sendMessage(sender, "<span style=\"color:purple\">"+result);
     }
+
+    protected boolean mute(ServerThread client, String message){
+        boolean wasCommand = false;
+        try {
+            for (ServerThread muted : clientsInRoom.values()) {
+                if (muted.getClientName().equals(message)) {
+                    client.mute(message);
+                    sendMessage(client, muted.getClientId()+" "+"<span style=\"color:purple\">"+client.getClientName()+" has muted "+muted.getClientName());
+                    break;
+                }
+            }    
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return wasCommand;
+    }
+    
+    protected boolean unMute(ServerThread client, String message){
+        boolean wasCommand = false;
+        try {
+            for (ServerThread muted : clientsInRoom.values()) {
+                if (client.isMute(muted.getClientName())) {
+                    client.unMute(muted.getClientName()); 
+                    sendMessage(client, muted.getClientId()+" "+"<span style=\"color:purple\">"+client.getClientName()+" has unmuted "+muted.getClientName());
+                    break;
+                }
+            }      
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return wasCommand;
+    }
+    
+    
+    
     // end send data to client(s)
 
     // receive data from ServerThread
