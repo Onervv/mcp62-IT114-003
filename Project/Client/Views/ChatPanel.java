@@ -13,7 +13,10 @@ import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -39,9 +42,9 @@ import Project.Common.LoggerUtil;
  * received.
  */
 public class ChatPanel extends JPanel {
-    private JPanel chatArea = null;
+    private JPanel chatArea=null;
     private UserListPanel userListPanel;
-    private final float CHAT_SPLIT_PERCENT = 0.7f;
+    private final float CHAT_SPLIT_PERCENT=0.7f;
 
     /**
      * Constructor to create the ChatPanel UI.
@@ -51,83 +54,76 @@ public class ChatPanel extends JPanel {
     public ChatPanel(ICardControls controls) {
         super(new BorderLayout(10, 10));
 
-        JPanel chatContent = new JPanel(new GridBagLayout());
+        JPanel chatContent=new JPanel(new GridBagLayout());
         chatContent.setAlignmentY(Component.TOP_ALIGNMENT);
 
         // Wraps a viewport to provide scroll capabilities
-        JScrollPane scroll = new JScrollPane(chatContent);
+        JScrollPane scroll=new JScrollPane(chatContent);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.setBorder(BorderFactory.createEmptyBorder());
 
-        chatArea = chatContent;
+        chatArea=chatContent;
 
-        userListPanel = new UserListPanel();
+        userListPanel=new UserListPanel();
 
         // JSplitPane setup with chat on the left and user list on the right
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scroll, userListPanel);
+        JSplitPane splitPane=new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scroll, userListPanel);
         splitPane.setResizeWeight(CHAT_SPLIT_PERCENT); // Allocate % space to the chat panel initially
 
         // Enforce splitPane split
         this.addComponentListener(new ComponentListener() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                SwingUtilities.invokeLater(() -> splitPane.setDividerLocation(CHAT_SPLIT_PERCENT));
-            }
+                @Override public void componentResized(ComponentEvent e) {
+                    SwingUtilities.invokeLater(() -> splitPane.setDividerLocation(CHAT_SPLIT_PERCENT));
+                }
 
-            @Override
-            public void componentMoved(ComponentEvent e) {
-            }
+                @Override public void componentMoved(ComponentEvent e) {}
 
-            @Override
-            public void componentShown(ComponentEvent e) {
-                SwingUtilities.invokeLater(() -> splitPane.setDividerLocation(CHAT_SPLIT_PERCENT));
-            }
+                @Override public void componentShown(ComponentEvent e) {
+                    SwingUtilities.invokeLater(() -> splitPane.setDividerLocation(CHAT_SPLIT_PERCENT));
+                }
 
-            @Override
-            public void componentHidden(ComponentEvent e) {
-            }
-        });
+                @Override public void componentHidden(ComponentEvent e) {}
+            });
 
-        JPanel input = new JPanel();
+        JPanel input=new JPanel();
         input.setLayout(new BoxLayout(input, BoxLayout.X_AXIS));
         input.setBorder(new EmptyBorder(5, 5, 5, 5)); // Add padding
 
-        JTextField textValue = new JTextField();
+        JTextField textValue=new JTextField();
         input.add(textValue);
 
-        JButton button = new JButton("Send");
+        JButton button=new JButton("Send");
+
         // Allows submission with the enter key instead of just the button click
         textValue.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-            }
+                @Override public void keyTyped(KeyEvent e) {}
 
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    button.doClick();
+                @Override public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+                        button.doClick();
+                    }
                 }
-            }
 
-            @Override
-            public void keyReleased(KeyEvent e) {
-            }
-        });
+                @Override public void keyReleased(KeyEvent e) {}
+            });
 
         button.addActionListener((event) -> {
-            SwingUtilities.invokeLater(() -> {
-                try {
-                    String text = textValue.getText().trim();
-                    if (!text.isEmpty()) {
-                        Client.INSTANCE.sendMessage(text);
-                        textValue.setText(""); // Clear the original text
-                    }
-                } catch (NullPointerException | IOException e) {
-                    LoggerUtil.INSTANCE.severe("Error sending message", e);
-                }
+                SwingUtilities.invokeLater(() -> {
+                        try {
+                            String text=textValue.getText().trim();
+
+                            if ( !text.isEmpty()) {
+                                Client.INSTANCE.sendMessage(text);
+                                textValue.setText(""); // Clear the original text
+                            }
+                        }
+
+                        catch (NullPointerException | IOException e) {
+                            LoggerUtil.INSTANCE.severe("Error sending message", e);
+                        }
+                    });
             });
-        });
 
         input.add(button);
 
@@ -138,34 +134,58 @@ public class ChatPanel extends JPanel {
         controls.addPanel(CardView.CHAT.name(), this);
 
         chatArea.addContainerListener(new ContainerListener() {
-            @Override
-            public void componentAdded(ContainerEvent e) {
-                SwingUtilities.invokeLater(() -> {
-                    if (chatArea.isVisible()) {
-                        chatArea.revalidate();
-                        chatArea.repaint();
-                    }
-                });
-            }
+                @Override public void componentAdded(ContainerEvent e) {
+                    SwingUtilities.invokeLater(() -> {
+                            if (chatArea.isVisible()) {
+                                chatArea.revalidate();
+                                chatArea.repaint();
+                            }
+                        });
+                }
 
-            @Override
-            public void componentRemoved(ContainerEvent e) {
-                SwingUtilities.invokeLater(() -> {
-                    if (chatArea.isVisible()) {
-                        chatArea.revalidate();
-                        chatArea.repaint();
-                    }
-                });
-            }
-        });
+                @Override public void componentRemoved(ContainerEvent e) {
+                    SwingUtilities.invokeLater(() -> {
+                            if (chatArea.isVisible()) {
+                                chatArea.revalidate();
+                                chatArea.repaint();
+                            }
+                        });
+                }
+            });
 
         // Add vertical glue to push messages to the top
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0; // Column index 0
-        gbc.gridy = GridBagConstraints.RELATIVE; // Automatically move to the next row
-        gbc.weighty = 1.0; // Give extra space vertically to this component
-        gbc.fill = GridBagConstraints.BOTH; // Fill both horizontally and vertically
+        GridBagConstraints gbc=new GridBagConstraints();
+        gbc.gridx=0; // Column index 0
+        gbc.gridy=GridBagConstraints.RELATIVE; // Automatically move to the next row
+        gbc.weighty=1.0; // Give extra space vertically to this component
+        gbc.fill=GridBagConstraints.BOTH; // Fill both horizontally and vertically
         chatArea.add(Box.createVerticalGlue(), gbc);
+
+        //mcp62, 12/2/2024
+        JButton exportButton=new JButton("Export Chat");
+
+        exportButton.addActionListener((event) -> {
+                StringBuilder chatHistory=new StringBuilder();
+                for (Component comp : chatArea.getComponents()) {
+                    if (comp instanceof JEditorPane) {
+                        JEditorPane textPane=(JEditorPane) comp;
+                        chatHistory.append(textPane.getText()).append("\n");
+                    }
+                }
+                LocalDateTime now=LocalDateTime.now();
+                DateTimeFormatter formatter=DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+                String filename="ChatHistory_" + now.format(formatter) + ".txt";
+                FileWriter writer;
+                try {
+                    writer=new FileWriter(filename);
+                    writer.write(chatHistory.toString());
+                    writer.close();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        input.add(exportButton);
     }
 
     /**
@@ -201,41 +221,43 @@ public class ChatPanel extends JPanel {
      */
     public void addText(String text) {
         SwingUtilities.invokeLater(() -> {
-            JEditorPane textContainer = new JEditorPane("text/html", text);
-            textContainer.setEditable(false);
-            textContainer.setBorder(BorderFactory.createEmptyBorder());
+                JEditorPane textContainer=new JEditorPane("text/html", text);
+                textContainer.setEditable(false);
+                textContainer.setBorder(BorderFactory.createEmptyBorder());
 
-            // Account for the width of the vertical scrollbar
-            JScrollPane parentScrollPane = (JScrollPane) SwingUtilities.getAncestorOfClass(JScrollPane.class, chatArea);
-            int scrollBarWidth = parentScrollPane.getVerticalScrollBar().getPreferredSize().width;
+                // Account for the width of the vertical scrollbar
+                JScrollPane parentScrollPane=(JScrollPane) SwingUtilities.getAncestorOfClass(JScrollPane.class, chatArea);
+                int scrollBarWidth=parentScrollPane.getVerticalScrollBar().getPreferredSize().width;
 
-            // Adjust the width of the text container
-            int availableWidth = chatArea.getWidth() - scrollBarWidth - 10; // Subtract an additional padding
-            textContainer.setSize(new Dimension(availableWidth, Integer.MAX_VALUE));
-            Dimension d = textContainer.getPreferredSize();
-            textContainer.setPreferredSize(new Dimension(availableWidth, d.height));
-            // Remove background and border
-            textContainer.setOpaque(false);
-            textContainer.setBorder(BorderFactory.createEmptyBorder());
-            textContainer.setBackground(new Color(0, 0, 0, 0));
+                // Adjust the width of the text container
+                int availableWidth=chatArea.getWidth() - scrollBarWidth - 10; // Subtract an additional padding
+                textContainer.setSize(new Dimension(availableWidth, Integer.MAX_VALUE));
+                Dimension d=textContainer.getPreferredSize();
+                textContainer.setPreferredSize(new Dimension(availableWidth, d.height));
+                // Remove background and border
+                textContainer.setOpaque(false);
+                textContainer.setBorder(BorderFactory.createEmptyBorder());
+                textContainer.setBackground(new Color(0, 0, 0, 0));
 
-            // GridBagConstraints settings for each message
-            GridBagConstraints gbc = new GridBagConstraints();
-            gbc.gridx = 0; // Column index 0
-            gbc.gridy = GridBagConstraints.RELATIVE; // Automatically move to the next row
-            gbc.weightx = 1; // Let the component grow horizontally to fill the space
-            gbc.fill = GridBagConstraints.HORIZONTAL; // Fill horizontally
-            gbc.insets = new Insets(0, 0, 5, 0); // Add spacing between messages
+                // GridBagConstraints settings for each message
+                GridBagConstraints gbc=new GridBagConstraints();
+                gbc.gridx=0; // Column index 0
+                gbc.gridy=GridBagConstraints.RELATIVE; // Automatically move to the next row
+                gbc.weightx=1; // Let the component grow horizontally to fill the space
+                gbc.fill=GridBagConstraints.HORIZONTAL; // Fill horizontally
+                gbc.insets=new Insets(0, 0, 5, 0); // Add spacing between messages
 
-            chatArea.add(textContainer, gbc);
-            chatArea.revalidate();
-            chatArea.repaint();
+                chatArea.add(textContainer, gbc);
+                chatArea.revalidate();
+                chatArea.repaint();
 
-            // Scroll down on new message
-            SwingUtilities.invokeLater(() -> {
-                JScrollBar vertical = parentScrollPane.getVerticalScrollBar();
-                vertical.setValue(vertical.getMaximum());
+                // Scroll down on new message
+                SwingUtilities.invokeLater(() -> {
+                        JScrollBar vertical=parentScrollPane.getVerticalScrollBar();
+                        vertical.setValue(vertical.getMaximum());
+                    });
+
+
             });
-        });
     }
 }

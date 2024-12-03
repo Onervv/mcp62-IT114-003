@@ -1,5 +1,11 @@
 package Project.Server;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +28,8 @@ public class ServerThread extends BaseServerThread {
     private Room currentRoom;
     private long clientId;
     private String clientName;
-    private Consumer<ServerThread> onInitializationComplete; // callback to inform when this object is ready
-    private ArrayList<String> mute = new ArrayList<>();
+    private Consumer < ServerThread > onInitializationComplete; // callback to inform when this object is ready
+    private ArrayList < String > mute = new ArrayList < > ();
 
     /**
      * Wraps the Socket connection and takes a Server reference and a callback
@@ -33,13 +39,13 @@ public class ServerThread extends BaseServerThread {
      * @param onInitializationComplete method to inform listener that this object is
      *                                 ready
      */
-    protected ServerThread(Socket myClient, Consumer<ServerThread> onInitializationComplete) {
+    protected ServerThread(Socket myClient, Consumer < ServerThread > onInitializationComplete) {
         Objects.requireNonNull(myClient, "Client socket cannot be null");
         Objects.requireNonNull(onInitializationComplete, "callback cannot be null");
         info("ServerThread created");
         // get communication channels to single client
         this.client = myClient;
-        this.clientId = ServerThread.DEFAULT_CLIENT_ID;// this is updated later by the server
+        this.clientId = ServerThread.DEFAULT_CLIENT_ID; // this is updated later by the server
         this.onInitializationComplete = onInitializationComplete;
 
     }
@@ -48,8 +54,10 @@ public class ServerThread extends BaseServerThread {
         if (name == null) {
             throw new NullPointerException("Client name can't be null");
         }
+
         this.clientName = name;
         onInitialized();
+        loadMuteList();
     }
 
     public String getClientName() {
@@ -68,85 +76,81 @@ public class ServerThread extends BaseServerThread {
         if (room == null) {
             throw new NullPointerException("Room argument can't be null");
         }
+
         currentRoom = room;
     }
 
-    @Override
-    protected void onInitialized() {
+    @Override protected void onInitialized() {
         onInitializationComplete.accept(this); // Notify server that initialization is complete
     }
 
-    @Override
-    protected void info(String message) {
+    @Override protected void info(String message) {
         LoggerUtil.INSTANCE.info(String.format("ServerThread[%s(%s)]: %s", getClientName(), getClientId(), message));
     }
 
-    @Override
-    protected void cleanup() {
+    @Override protected void cleanup() {
         currentRoom = null;
         super.cleanup();
     }
 
-    @Override
-    protected void disconnect() {
+    @Override protected void disconnect() {
         // sendDisconnect(clientId, clientName);
         super.disconnect();
     }
 
     // handle received message from the Client
-    @Override
-    protected void processPayload(Payload payload) {
+    @Override protected void processPayload(Payload payload) {
         try {
             switch (payload.getPayloadType()) {
-                case CLIENT_CONNECT:
-                    ConnectionPayload cp = (ConnectionPayload) payload;
-                    setClientName(cp.getClientName());
-                    break;
-                case MESSAGE:
-                    currentRoom.sendMessage(this, payload.getMessage());
-                    break;
-                    //mcp62 11/18/2024
-                case PRIVATE:
-                    currentRoom.sendPrivateMessage(this, payload.getMessage());
-                    break;
-                    //mcp62 12/2/2024
-                case ROLL:
-                    currentRoom.sendRoll(this, payload.getMessage());
-                    break;
-                    //mcp62 11/18/2024
-                case FLIP:
-                    currentRoom.handleSendFlip(this);
-                    break;
-                case ROOM_CREATE:
-                    currentRoom.handleCreateRoom(this, payload.getMessage());
-                    break;
-                case ROOM_JOIN:
-                    currentRoom.handleJoinRoom(this, payload.getMessage());
-                    break;
-                case ROOM_LIST:
-                    currentRoom.handleListRooms(this, payload.getMessage());
-                    break;
-                case DISCONNECT:
-                    currentRoom.disconnect(this);
-                    break;
-                case MUTE:
-                    currentRoom.mute(this, payload.getMessage()); //TODO implement
-                    break;
-                case UNMUTE:
-                    currentRoom.unMute(this, payload.getMessage()); //TODO implement
-                    break;
-                default:
-                    break;
+            case CLIENT_CONNECT:
+                ConnectionPayload cp = (ConnectionPayload) payload;
+                setClientName(cp.getClientName());
+                break;
+            case MESSAGE:
+                currentRoom.sendMessage(this, payload.getMessage());
+                break;
+                //mcp62 11/18/2024
+            case PRIVATE:
+                currentRoom.sendPrivateMessage(this, payload.getMessage());
+                break;
+                //mcp62 12/2/2024
+            case ROLL:
+                currentRoom.sendRoll(this, payload.getMessage());
+                break;
+                //mcp62 11/18/2024
+            case FLIP:
+                currentRoom.handleSendFlip(this);
+                break;
+            case ROOM_CREATE:
+                currentRoom.handleCreateRoom(this, payload.getMessage());
+                break;
+            case ROOM_JOIN:
+                currentRoom.handleJoinRoom(this, payload.getMessage());
+                break;
+            case ROOM_LIST:
+                currentRoom.handleListRooms(this, payload.getMessage());
+                break;
+            case DISCONNECT:
+                currentRoom.disconnect(this);
+                break;
+            case MUTE:
+                currentRoom.mute(this, payload.getMessage()); //TODO implement
+                break;
+            case UNMUTE:
+                currentRoom.unMute(this, payload.getMessage()); //TODO implement
+                break;
+            default:
+                break;
             }
         } catch (Exception e) {
-            LoggerUtil.INSTANCE.severe("Could not process Payload: " + payload,e);
-        
+            LoggerUtil.INSTANCE.severe("Could not process Payload: " + payload, e);
+
         }
     }
 
     // send methods to pass data back to the Client
 
-    public boolean sendRooms(List<String> rooms) {
+    public boolean sendRooms(List < String > rooms) {
         RoomResultsPayload rrp = new RoomResultsPayload();
         rrp.setRooms(rooms);
         return send(rrp);
@@ -236,17 +240,57 @@ public class ServerThread extends BaseServerThread {
         cp.setClientName(clientName);
         return send(cp);
     }
-    public void mute(String name){
-        mute.add(name);
-    }
-    public void unMute(String name){
-        mute.remove(name);
-    }
-    public boolean isMute(String name){
-        if (mute.contains(name)){
-            return true;
+
+    public void mute(String name) {
+        if (!mute.contains(name)) {
+            mute.add(name);
+            saveMuteList();
         }
-        return false;
+    }
+
+    public void unMute(String name) {
+        if (mute.remove(name)) {
+            saveMuteList();
+        }
+    }
+
+    public boolean isMute(String name) {
+        return mute.contains(name);
+    }
+
+    private void loadMuteList() {
+        try {
+            File file = new File(clientName + ".txt");
+
+            if (file.exists()) {
+                BufferedReader reader = new BufferedReader(new FileReader(file));
+                mute.clear();
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    mute.add(line);
+                }
+
+                reader.close();
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading mute list: " + e.getMessage());
+        }
+    }
+
+    private void saveMuteList() {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(clientName + ".txt"));
+
+            for (String mutedUser: mute) {
+                writer.write(mutedUser);
+                writer.newLine();
+            }
+
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error saving mute list: " + e.getMessage());
+        }
     }
 
     // end send methods
