@@ -1,0 +1,27 @@
+<html>
+  <head>
+    
+  </head>
+  <body>
+    *You connected*
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    *You joined the Room lobby*
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    a[1]: hi
+  </body>
+</html>
+
