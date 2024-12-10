@@ -16,6 +16,9 @@ import javax.swing.border.EmptyBorder;
  */
 public class UserListItem extends JPanel {
     private JEditorPane textContainer;
+    private static final Color HIGHLIGHT_COLOR = new Color(230, 240, 255); // light blue
+    private static final Color MUTED_COLOR = Color.LIGHT_GRAY;
+    private static final Color DEFAULT_COLOR = Color.WHITE;
 
     /**
      * Constructor to create a UserListItem.
@@ -47,9 +50,18 @@ public class UserListItem extends JPanel {
 
         this.setLayout(new BorderLayout());
         this.add(textContainer, BorderLayout.CENTER);
+        setBackground(DEFAULT_COLOR); // Set default background
     }
 
     public String getClientName() {
         return textContainer.getText();
+    }
+
+    public void setHighlighted(boolean highlighted) {
+        setBackground(highlighted ? HIGHLIGHT_COLOR : DEFAULT_COLOR);
+    }
+
+    public void setMuted(boolean muted) {
+        setBackground(muted ? MUTED_COLOR : DEFAULT_COLOR);
     }
 }

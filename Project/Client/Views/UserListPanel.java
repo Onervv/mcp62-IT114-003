@@ -174,4 +174,25 @@ public class UserListPanel extends JPanel {
             userListArea.repaint();
         });
     }
+
+    public void setLastSender(long clientId) {
+        SwingUtilities.invokeLater(() -> {
+            // Reset all highlights
+            userItemsMap.values().forEach(item -> item.setHighlighted(false));
+            // Highlight last sender
+            UserListItem item = userItemsMap.get(clientId);
+            if (item != null) {
+                item.setHighlighted(true);
+            }
+        });
+    }
+
+    public void setUserMuted(long clientId, boolean muted) {
+        SwingUtilities.invokeLater(() -> {
+            UserListItem item = userItemsMap.get(clientId);
+            if (item != null) {
+                item.setMuted(muted);
+            }
+        });
+    }
 }
