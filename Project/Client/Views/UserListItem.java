@@ -19,6 +19,7 @@ public class UserListItem extends JPanel {
     private static final Color HIGHLIGHT_COLOR = new Color(230, 240, 255); // light blue
     private static final Color MUTED_COLOR = Color.LIGHT_GRAY;
     private static final Color DEFAULT_COLOR = Color.WHITE;
+    private boolean isMuted = false;
 
     /**
      * Constructor to create a UserListItem.
@@ -62,6 +63,12 @@ public class UserListItem extends JPanel {
     }
 
     public void setMuted(boolean muted) {
+        this.isMuted = muted;
+        textContainer.setForeground(muted ? MUTED_COLOR : Color.BLACK);
         setBackground(muted ? MUTED_COLOR : DEFAULT_COLOR);
+    }
+
+    public boolean isMuted() {
+        return isMuted;
     }
 }

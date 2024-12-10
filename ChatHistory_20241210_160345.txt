@@ -1,0 +1,126 @@
+<html>
+  <head>
+    
+  </head>
+  <body>
+    *You connected*
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    *You joined the Room lobby*
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    *Joe[3] joined the Room lobby*
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Jess[2]: Hey guys
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Bob[1]: Oh hey Jess, how are you doing.
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Jess[2]: Not bad, just finished cooking
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Joe[3]: oh cool, what did you make
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Bob[1]: yeah what did you make Jess
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Jess[2]: I made some cookies
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Bob[1]: hmmmm
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Joe[3]: wow, that does sound good
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Jess[2]: I know, i made a mess in the kitchen though
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Bob[1]: Its ok I bet the taste of those sweet cookies made it all worth it
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Joe[3]: Yeah d
+  </body>
+</html>
+
