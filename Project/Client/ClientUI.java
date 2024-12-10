@@ -197,6 +197,7 @@ public class ClientUI extends JFrame implements IConnectionEvents, IMessageEvent
         if (currentCard.ordinal() >= CardView.CHAT.ordinal()) {
             String clientName = Client.INSTANCE.getClientNameFromId(clientId);
             chatPanel.addText(String.format("%s[%s]: %s", clientName, clientId, message));
+            chatPanel.getUserListPanel().setLastSender(clientId);
         }
     }
 
@@ -252,4 +253,11 @@ public class ClientUI extends JFrame implements IConnectionEvents, IMessageEvent
     }
 
     // Interface methods end
+
+    // Add this method to handle mute commands
+    public void handleMuteCommand(long clientId, boolean muted) {
+        if (currentCard.ordinal() >= CardView.CHAT.ordinal()) {
+            chatPanel.getUserListPanel().setUserMuted(clientId, muted);
+        }
+    }
 }

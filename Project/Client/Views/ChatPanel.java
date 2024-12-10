@@ -260,4 +260,13 @@ public class ChatPanel extends JPanel {
 
             });
     }
+
+    /**
+     * Gets the user list panel.
+     * 
+     * @return The user list panel.
+     */
+    public UserListPanel getUserListPanel() {
+        return userListPanel;
+    }
 }
