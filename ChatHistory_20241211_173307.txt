@@ -1,0 +1,360 @@
+<html>
+  <head>
+    
+  </head>
+  <body>
+    *You connected*
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    *You joined the Room lobby*
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    *Bob[3] joined the Room lobby*
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Joe[1]: Hello
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Joe[1]: <span><font color="purple">heads</font></span>
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Joe[1]: /flip
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Joe[1]: <span><font color="purple">7</font></span>
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Joe[1]: /roll 3d3
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Joe[1]: <span><font color="purple">7</font></span>
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Joe[1]: /roll 3d3
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Joe[1]: <span><font color="purple">8</font></span>
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Joe[1]: /roll 3d3
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    *You left the Room lobby*
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    *You joined the Room LarrysRoom*
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Larry[2]: Where is everyone at?
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    *Bob[3] joined the Room LarrysRoom*
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Bob[3]: hello
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Larry[2]: /leaveroom
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    *You disconnected*
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    *You connected*
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    *You joined the Room lobby*
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    *Bob[5] joined the Room lobby*
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Joe[1]: <span><font color="red">Red</font></span>
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Joe[1]: <span><font color="blue">Blue</font></span>
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Joe[1]: <span><font color="green">Green</font></span>
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Joe[1]: <span><font color="blue"><u>BLUE UNDERLINED</u></font></span>
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Joe[1]: <b>bold</b>
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Larry[4]: <i>Slant</i>
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Joe[1]: larry
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Joe[1]: 4 <span><font color="purple">Joe has muted Larry</font></span>
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Joe[1]: /mute Larry
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Larry[4]: hey whats up
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Larry[4]: 1 <span><font color="purple">Larry has muted Joe</font></span>
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Larry[4]: /mute Joe
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Larry[4]: hello
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Larry[4]: 1 <span><font color="purple">Larry has unmuted Joe</font></span>
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Larry[4]: /unmute Joe
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Larry[4]: hello
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Larry[4]: cool wow
+  </body>
+</html>
+
+<html>
+  <head>
+    
+  </head>
+  <body>
+    Bob[5]: wow
+  </body>
+</html>
+
